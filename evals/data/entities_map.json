@@ -1,0 +1,59 @@
+{
+    "nodes": [
+      {"id": "Resource"},
+      {"id": "Contained Resource"},
+      {"id": "Relationship"},
+      {"id": "Profile"},
+      {"id": "Contained Profile"},
+      {"id": "Relationship Definition"},
+      {"id": "Data Source"},
+      {"id": "Data Partition"},
+      {"id": "Bulk Operation"},
+      {"id": "Bundle Operation"},
+      {"id": "User"},
+      {"id": "Role"},
+      {"id": "System-Defined Permission"},
+      {"id": "User-Defined Policy"},
+      {"id": "Pipeline Execution"}
+    ],
+    "edges": [
+      {"source": "Resource",             "target": "Contained Resource",     "relation": "contains",                "cardinality": "1:N"},
+      {"source": "Contained Resource",   "target": "Resource",               "relation": "belongs_to",              "cardinality": "N:1"},
+  
+      {"source": "Resource",             "target": "Relationship",           "relation": "associated_with",         "cardinality": "N:M"},
+      {"source": "Relationship",         "target": "Resource",               "relation": "connects",                "cardinality": "2"},
+  
+      {"source": "Resource",             "target": "Profile",                "relation": "defined_by",              "cardinality": "N:1"},
+      {"source": "Profile",              "target": "Resource",               "relation": "defines",                 "cardinality": "1:N"},
+  
+      {"source": "Contained Resource",   "target": "Contained Profile",      "relation": "defined_by",              "cardinality": "N:1"},
+      {"source": "Contained Profile",    "target": "Contained Resource",     "relation": "defines",                 "cardinality": "1:N"},
+      {"source": "Contained Profile",    "target": "Profile",                "relation": "associated_with",         "cardinality": "N:1"},
+      {"source": "Profile",              "target": "Contained Profile",      "relation": "has_contained_profile",   "cardinality": "1:N"},
+  
+      {"source": "Relationship",         "target": "Relationship Definition","relation": "defined_by",              "cardinality": "N:1"},
+      {"source": "Relationship Definition","target": "Relationship",         "relation": "defines",                 "cardinality": "1:N"},
+      {"source": "Relationship Definition","target": "Profile",              "relation": "refers_to_source_profile","cardinality": "1:1"},
+      {"source": "Relationship Definition","target": "Profile",              "relation": "refers_to_target_profile","cardinality": "1:1"},
+  
+      {"source": "Data Source",          "target": "Profile",                "relation": "has_profile",             "cardinality": "1:N"},
+      {"source": "Data Source",          "target": "Data Partition",         "relation": "feeds",                   "cardinality": "1:N"},
+      {"source": "Data Partition",       "target": "Data Source",            "relation": "references",              "cardinality": "N:1"},
+      {"source": "Data Partition",       "target": "Resource",               "relation": "represents",              "cardinality": "N"},
+  
+      {"source": "Bulk Operation",       "target": "Resource",               "relation": "operates_on",             "cardinality": "list"},
+      {"source": "Bulk Operation",       "target": "Relationship",           "relation": "operates_on",             "cardinality": "list"},
+      {"source": "Bundle Operation",     "target": "Resource",               "relation": "applies_to",              "cardinality": "list"},
+      {"source": "Bundle Operation",     "target": "Relationship",           "relation": "applies_to",              "cardinality": "list"},
+  
+      {"source": "User",                 "target": "Role",                   "relation": "assigned_role",           "cardinality": "1:N"},
+      {"source": "Role",                 "target": "User",                   "relation": "assigned_user",           "cardinality": "1:N"},
+  
+      {"source": "Role",                 "target": "System-Defined Permission","relation": "grants",               "cardinality": "list"},
+      {"source": "Role",                 "target": "User-Defined Policy",    "relation": "grants",                  "cardinality": "list"},
+      {"source": "System-Defined Permission","target": "Role",              "relation": "part_of_role",            "cardinality": "N:1"},
+      {"source": "User-Defined Policy",  "target": "Role",                   "relation": "part_of_role",            "cardinality": "N:1"},
+  
+      {"source": "Pipeline Execution",   "target": "Data Source",            "relation": "linked_to",               "cardinality": "N:1"}
+    ]
+  }

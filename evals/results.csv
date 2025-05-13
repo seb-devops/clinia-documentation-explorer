@@ -1,0 +1,2 @@
+query,runtime_seconds,prompt_tokens,completion_tokens,total_tokens,ground_truth_entities,generated_entities,correctly_generated,accuracy,missing,extra
+generate the markdown file containing the different entities from the clinia api documentation,31.49,402,987,1389,15,10,8,53.33%,Bulk Operation;Bundle Operation;Pipeline Execution;Role;System-Defined Permission;User;User-Defined Policy,Relative Identity;Unified Resource
