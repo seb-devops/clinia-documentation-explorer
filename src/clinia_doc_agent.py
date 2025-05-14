@@ -18,7 +18,7 @@ from utils import create_markdown_file, get_clients, get_env_var
 
 load_dotenv()
 
-# Configuration des modèles
+# TODO: Put logic for initialiation in utils.py
 llm = get_env_var("PRIMARY_MODEL") or "gpt-4.1-mini"
 base_url = get_env_var("BASE_URL") or "https://api.openai.com/v1"
 api_key = get_env_var("OPENAI_API_KEY") or "no-llm-api-key-provided"
