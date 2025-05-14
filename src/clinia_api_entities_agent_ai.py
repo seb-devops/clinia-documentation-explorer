@@ -26,11 +26,9 @@ api_key = get_env_var("LLM_API_KEY") or "no-llm-api-key-provided"
 model = OpenAIModel(llm, base_url=base_url, api_key=api_key)
 embedding_model = get_env_var("EMBEDDING_MODEL") or "text-embedding-3-small"
 
-# Configuration de logfire
 logfire.configure(token=get_env_var("LOGFIRE_API_KEY"))
 logfire.instrument_openai()
 
-# Prompt de base pour l'agent (à définir selon vos besoins)
 module_agent_prompt = """
 # Role and Objective
 Act as an API documentation architect. Your goal is to produce a comprehensive markdown summary of all entities in the Clinia API, highlighting their definitions, main attributes, and interconnections.
@@ -95,6 +93,13 @@ Proceed step by step: identify entities, summarize, extract attributes, relate, 
 
 @dataclass
 class CliniaModuleAgentDeps:
+    """
+    Data class holding dependencies for the Clinia module agent.
+
+    Attributes:
+        supabase (Client): The Supabase client for database access.
+        embedding_client (AsyncOpenAI): The OpenAI client for embedding generation.
+    """
     supabase: Client
     embedding_client: AsyncOpenAI
 
@@ -105,40 +110,39 @@ tools_refiner_agent = Agent(model, system_prompt=module_agent_prompt, deps_type=
 @tools_refiner_agent.tool
 async def retrieve_relevant_documentation(ctx: RunContext[CliniaModuleAgentDeps], query: str) -> str:
     """
-    Récupère des extraits de documentation pertinents basés sur la requête avec RAG.
-    Assurez-vous que vos recherches se concentrent toujours sur l'implémentation d'outils.
+    Tool to retrieve relevant documentation chunks for a given query using the agent's dependencies.
 
     Args:
-        ctx: Le contexte incluant le client Supabase et le client OpenAI
-        query: Votre requête pour récupérer la documentation pertinente pour l'implémentation d'outils
+        ctx (RunContext[CliniaModuleAgentDeps]): The agent's context containing dependencies.
+        query (str): The user query string.
 
     Returns:
-        Une chaîne formatée contenant les 10 extraits de documentation les plus pertinents
+        str: Formatted documentation chunks or an error message if retrieval fails.
     """
     return await retrieve_relevant_documentation_tool(ctx.deps.supabase, ctx.deps.embedding_client, query)
 
 
 async def main():
-    """Fonction principale pour exécuter l'agent"""
-    # Initialiser les clients
+    """
+    Main function to run the agent for extracting and saving Clinia API entities documentation.
+
+    This function initializes the required clients and dependencies, runs the agent with a sample query,
+    and saves the agent's response as a markdown file.
+    """
     embedding_client, supabase = get_clients()
 
-    # Initialiser les dépendances
     deps = CliniaModuleAgentDeps(
         supabase=supabase,
         embedding_client=embedding_client,
     )
 
-    # Exemple d'utilisation de l'agent
     query = "generate the markdown file containing the different entities from the clinia api documentation"
     response = await tools_refiner_agent.run(query, deps=deps)
 
-    # Save the response in a markdown file using the utility function
     create_markdown_file("entities", response.data)
 
     print("Réponse de l'agent:")
     print(response.data)
-
 
 
 if __name__ == "__main__":

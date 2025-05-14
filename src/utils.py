@@ -21,15 +21,11 @@ def get_env_var(key: str) -> Optional[str]:
 
 
 def get_clients():
-    # LLM client setup
-    openai_client = None
-    # Ensure environment variables are loaded
-    load_dotenv()
     base_url = get_env_var("BASE_URL") or "https://api.openai.com/v1"
     api_key = get_env_var("LLM_API_KEY") or "no-api-key-provided"
 
     openai_client = AsyncOpenAI(base_url=base_url, api_key=api_key)  # Supabase client setup
-    supabase = None
+
     supabase_url = get_env_var("SUPABASE_URL")
     supabase_key = get_env_var("SUPABASE_KEY")
 

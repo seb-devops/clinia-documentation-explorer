@@ -235,9 +235,6 @@ async def crawl_parallel_with_requests(urls: List[str], max_concurrent: int = 5)
             except Exception as e:
                 log.error(f"Error processing {url}: {str(e)}")
 
-
-        # Optionally, sleep to avoid hammering the server
-        # await asyncio.sleep(2)
     log.info(f"Processing {len(urls)} URLs with concurrency {max_concurrent}")
     await asyncio.gather(*[process_url(url) for url in urls])
 

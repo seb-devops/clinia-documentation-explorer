@@ -12,7 +12,16 @@ embedding_model = get_env_var("EMBEDDING_MODEL") or "text-embedding-3-small"
 
 
 async def get_embedding(text: str, embedding_client: AsyncOpenAI) -> List[float]:
-    """Get embedding vector from OpenAI."""
+    """
+    Asynchronously get the embedding vector for a given text using OpenAI.
+
+    Args:
+        text (str): The text to embed.
+        embedding_client (AsyncOpenAI): The OpenAI client to use for embedding.
+
+    Returns:
+        List[float]: The embedding vector for the text, or a zero vector on error.
+    """
     try:
         response = await embedding_client.embeddings.create(model=embedding_model, input=text)
         return response.data[0].embedding
@@ -22,11 +31,20 @@ async def get_embedding(text: str, embedding_client: AsyncOpenAI) -> List[float]
 
 
 async def retrieve_relevant_documentation_tool(supabase: Client, embedding_client: AsyncOpenAI, user_query: str) -> str:
+    """
+    Retrieve and format the most relevant documentation chunks for a user query using vector search.
+
+    Args:
+        supabase (Client): The Supabase client for database access.
+        embedding_client (AsyncOpenAI): The OpenAI client for embedding generation.
+        user_query (str): The user's query string.
+
+    Returns:
+        str: Formatted documentation chunks or an error message if retrieval fails.
+    """
     try:
-        # Get the embedding for the query
         query_embedding = await get_embedding(user_query, embedding_client)
 
-        # Query Supabase for relevant documents
         result = supabase.rpc(
             "match_site_pages",
             {"query_embedding": query_embedding, "match_count": 10, "filter": {"source": "pydantic_ai_docs"}},
