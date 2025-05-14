@@ -1,5 +1,6 @@
 # Clinia Documentation explorer
-Personal project to facilitate the exploration of Clinia's documentation using a rag and a Agent that can query it.
+Personal project to facilitate the exploration of Clinia's documentation 
+using a rag and a Agent that can query it.
 
 ## Setup
 1. Install the dependenciees: 
@@ -47,16 +48,16 @@ The purpose of the evals folder is to generate a dataset to evaluate the perform
 ## Project version 
 
 ### Version 1
-
  - Crawler to extract documentation from the Clinia website and store it in supabase
- - Agent to extract entities and relationships from the api documentation
- - Use logfire to monitor the agent
- 
- The agent create a markdown file with every entities and their relationships.
+ - Agent to ask simple questions to the documentation
+ - Use logfire to monitor the agent( Compatible with OpenTelemetry)
+ - Initial evals to test if the agent can answer the questions correctly.
 
-### Version 2
- - Adding evals for testing the agent
- - Adding a second agent that validate each entity and relationship with the markdown file
+### Version 2 ( TODO)
+ - Adding evals question for testing the agent with pydanticAI evals module
+ - Add unit tests to validate tools and crawler
+ - Improve metadata on the chunks to filter the results before embedding
 
 ### Version 3
-
+ - Answer complex query by using agentic RAG
+ - Improve Monitoring to be able to follow accurately the behavior of the agents

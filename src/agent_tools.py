@@ -1,11 +1,8 @@
-import os
-import sys
 from typing import List
 
 from openai import AsyncOpenAI
 from supabase import Client
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import get_env_var
 
 embedding_model = get_env_var("EMBEDDING_MODEL") or "text-embedding-3-small"
@@ -47,7 +44,7 @@ async def retrieve_relevant_documentation_tool(supabase: Client, embedding_clien
 
         result = supabase.rpc(
             "match_site_pages",
-            {"query_embedding": query_embedding, "match_count": 10, "filter": {"source": "pydantic_ai_docs"}},
+            {"query_embedding": query_embedding, "match_count": 20, "filter": {"source": "clinia_docs"}},
         ).execute()
 
         if not result.data:

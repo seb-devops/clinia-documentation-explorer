@@ -1,0 +1,22 @@
+[
+    {
+        "question": "What is the module used for data management",
+        "answer": "Master Data Management"
+    },
+    {
+        "question": "How does two entities can be linked together?",
+        "answer": "Relationship"
+    },
+    {
+        "question": "What are the two types of search?",
+        "answer": "Standard Search, Health-Grade Search"
+    },
+    {
+        "question": "What Does compose a concept in the api?",
+        "answer": "code, designation, definition"
+    },
+    {
+        "question": "What mecanism is used to treat multiple entities resolution?",
+        "answer": "Resolution queue"
+    }
+]

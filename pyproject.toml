@@ -1,7 +1,7 @@
 [project]
 name = "clinia-doc-crawler"
 version = "0.1.0"
-description = "A Python project using uv and src layout."
+description = "Project to faciliate the exploration of the clinia documentation"
 readme = "README.md"
 requires-python = ">=3.12"
 
@@ -12,19 +12,17 @@ dependencies = [
     "html2text==2024.2.26",
     "supabase==2.11.0",
     "Crawl4AI==0.4.247",
-    "pydantic-ai",
-    "logfire",
+    "pydantic-ai==0.0.22",
+    "logfire=3.15.0",
 ]
 
 [dependency-groups]
 dev = [
     "ruff==0.8.2",
-    "pre-commit==3.7.1",
     "pytest>=8.3.3",
     "pytest-cov>=4.0.0",
-    "ipykernel",
-    "tiktoken",
-    "nest_asyncio"
+    "ipykernel>=6.29.5",
+    "nest_asyncio>=1.6.0"
 ]
 
 [tool.uv]
@@ -34,8 +32,6 @@ default-groups = ["dev"]
 ## Imports and formatting
 [tool.ruff]
 line-length = 120
-target-version = "py311"
-extend-exclude = ["gen"]
 
 [tool.ruff.lint]
 ignore = ["C901", "E501", "F401", "F403", "F841", "W605"]

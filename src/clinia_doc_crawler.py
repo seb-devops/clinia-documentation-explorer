@@ -63,15 +63,15 @@ async def get_title_and_summary(chunk: str, url: str) -> Dict[str, str]:
     system_prompt = """You are an AI that extracts titles and summaries from documentation chunks.\n    Return a JSON object with 'title' and 'summary' keys.\n    For the title: If this seems like the start of a document, extract its title. If it's a middle chunk, derive a descriptive title.\n    For the summary: Create a concise summary of the main points in this chunk.\n    Keep both title and summary concise but informative."""
     try:
         response = await openai_client.chat.completions.create(
-            model = get_env_var("PRIMARY_MODEL") or "gpt-4o-mini",
-            messages = [
+            model=get_env_var("PRIMARY_MODEL") or "gpt-4o-mini",
+            messages=[
                 {"role": "system", "content": system_prompt},
                 {
                     "role": "user",
                     "content": f"URL: {url}\n\nContent:\n{chunk[:1000]}...",
                 },
             ],
-            response_format = {"type": "json_object"},
+            response_format={"type": "json_object"},
         )
         return json.loads(response.choices[0].message.content)
 
@@ -155,6 +155,7 @@ async def insert_chunk(chunk: ProcessedChunk):
         result = supabase.table("site_pages").insert(data).execute()
         log.info(f"Inserted chunk {chunk.chunk_number} for {chunk.url}")
         return result
+
     except Exception as e:
         log.error(f"Error inserting chunk: {e}")
         return None
@@ -171,7 +172,7 @@ async def process_and_store_document(url: str, markdown: str):
     Returns:
         None
     """
-    chunks = chunk_text(markdown,1000)
+    chunks = chunk_text(markdown, 1000)
 
     log.info(f"Split document into {len(chunks)} chunks for {url}")
     tasks = [process_chunk(chunk, i, url) for i, chunk in enumerate(chunks)]
@@ -203,6 +204,7 @@ def fetch_url_content(url: str) -> str:
         markdown = html_converter.handle(response.text)
         markdown = re.sub(r"\n{3,}", "\n\n", markdown)
         return markdown
+
     except requests.RequestException as e:
         raise RuntimeError(f"Error fetching {url}: {str(e)}") from e
 
@@ -219,6 +221,7 @@ async def crawl_parallel_with_requests(urls: List[str], max_concurrent: int = 5)
         None
     """
     semaphore = asyncio.Semaphore(max_concurrent)
+
     async def process_url(url: str):
         async with semaphore:
             log.info(f"Crawling: {url}")
@@ -226,7 +229,7 @@ async def crawl_parallel_with_requests(urls: List[str], max_concurrent: int = 5)
                 loop = asyncio.get_running_loop()
                 log.info(f"Fetching content from: {url}")
                 markdown = await loop.run_in_executor(None, fetch_url_content, url)
-                if (markdown):
+                if markdown:
                     log.info(f"Successfully crawled: {url}")
                     await process_and_store_document(url, markdown)
                 else:

@@ -1,0 +1,157 @@
+eval_launch_time,question,expected_answer,agent_response,runtime_seconds,all_terms_found,missing_terms
+2025-05-14 11:03:28,What is the module used for data management,Master Data Management,"The module used for data management in Clinia is the Master Data Management (MDM) module.
+
+- MDM is responsible for centrally managing an organization's critical data (such as provider, patient, medical, or academic information) to ensure consistency, accuracy, and reliability across the entire organization.
+- It integrates core data across various systems and uses governance and data quality processes to create a single, authoritative source of truth.
+- The Clinia Platform's MDM module enables users to configure and implement data structures and processes following enterprise-grade MDM best practices.
+- This module ensures that the organization gets trusted data whenever it needs it.
+- Data Partitions in Clinia include MDM Partitions, which contain unified data from one or many data sources connected to the MDM module.
+
+In summary, Clinia's data management is centered around the Master Data Management (MDM) module that supports reliable, unified, and governed data access and handling.
+
+If you want to learn more about usage, configuration, or related aspects, you can explore the ""Master Data Management"" section in the Clinia documentation.",10.01,True,
+2025-05-14 11:03:28,How does two entities can be linked together?,Relationship,"Two entities can be linked together in Clinia primarily through the use of relationships and entity resolution.
+
+Here's how it works:
+
+1. **Entity Resolution**:
+   - Entity Resolution is a process that identifies data records in one or across multiple data sources that refer to the same real-world entity and links them together.
+   - When new source records are ingested, the system compares them against existing unified records based on configured resolution rules.
+   - Outcomes of entity resolution include:
+     - No match: A new unified record is created.
+     - Definitive match: The new source record is linked to an existing unified record.
+     - Possible match: Requires human review to decide.
+   - If two unified records are found to represent the same real-world entity, they can be merged and linked accordingly.
+   
+2. **Creating Relationships Between Entities**:
+   - After the base profiles (entities) are created, relationships can be defined to link two entities.
+   - To link two entities such as a `provider` and an `office`, you create a **relationship definition** that specifies:
+     - The ""from"" profile (entity type) and its key.
+     - The ""to"" profile (entity type) and its key.
+     - Cardinality and optional properties describing the relationship.
+   - Relationship definitions are created at the MDM (Master Data Management) level.
+   - Using relationship operations, you can create or upsert relationship instances that connect specific entities by their ids.
+   
+3. **Example of Defining and Creating Relationships**:
+   - A JSON structure defines the relationship type, profiles involved, and properties.
+   - Example linking `provider` and `office` with a relationship type `provider-office`:
+   ```json
+   {
+     ""from"": {
+       ""profileKey"": ""unified-office"",
+       ""includeKey"": ""staff"",
+       ""cardinality"": ""one-to-many""
+     },
+     ""to"": {
+       ""profileKey"": ""unified-provider"",
+       ""includeKey"": ""worksAt"",
+       ""cardinality"": ""many-to-one""
+     },
+     ""properties"": {
+       ""effective"": {
+         ""type"": ""period""
+       },
+       ""phone"": {
+         ""type"": ""contactpoint""
+       }
+     }
+   }
+   ```
+   Then you use relationship operations in bundle requests to create the actual links between instances (entities).
+
+4. **Unified Collections and Unified Relationships**:
+   - Unified collections aggregate and unify fragmented data from multiple sources into a single resource type.
+   - Unified relationships unify relationships across different sources between entities into a singular unified relationship type.
+
+In summary, entities are linked either automatically through entity resolution that identifies when data represents the same real-world entity, or explicitly by defining and creating relationships between entities that specify how they are connected.
+
+If you want detailed steps or examples on how to define these relationships or entity resolution rules, I can provide those as well.",14.37,True,
+2025-05-14 11:03:28,What are the two types of search?,"Standard Search, Health-Grade Search","The two types of search in Clinia are:
+
+1. **Standard Search**  
+   - Offers basic filter and match operations.  
+   - Typically used for simple searches based on specific filters (e.g., Opening Hours, Resource Types) and keyword matching in text fields.  
+   - It allows querying records within a Data Partition using basic filters and pagination.
+
+2. **Health-Grade Search (HGS)**  
+   - Clinia's advanced, AI-driven search platform for healthcare data.  
+   - Supports keyword, semantic, and generative search experiences.  
+   - Allows high personalization, tuning, and concept specialization.  
+   - Utilizes vector embeddings for semantic similarity search (KNN search) alongside phrase and keyword matching.  
+   - Designed for complex and context-aware search applications, especially in healthcare use cases.
+
+Summary:
+- Standard Search is basic and filter-based.
+- Health-Grade Search is advanced, AI-powered, and supports semantic and vector-based search.
+
+These two provide different capabilities depending on the required search experience.
+
+For more details, you can refer to:  
+- Standard Search: [How to use the Standard Search](https://clinia.readme.io/docs/standard-search)  
+- Health-Grade Search: [How to use the Health-Grade Search](https://clinia.readme.io/docs/health-grade-search)",6.96,True,
+2025-05-14 11:03:28,What Does compose a concept in the api?,"code, designation, definition","A concept in the Clinia API is a fundamental entry that represents a specific term or entity within a vocabulary. Each concept contains unique information and a key-value pair list of terms used for translation in Clinia's UI.
+
+### Composition of a Concept
+A concept typically includes:
+- **code**: A unique identifier for the concept.
+- **definition**: A description of the concept.
+- **designation**: A dictionary of translated terms keyed by language codes (e.g., ""en"" for English, ""fr"" for French).
+
+Example of a concept JSON:
+```json
+{
+  ""code"": ""lang-en"",
+  ""definition"": ""English spoken-language"",
+  ""designation"": {
+    ""en"": ""English"",
+    ""fr"": ""Anglais"",
+    ""es"": ""Inglés""
+  }
+}
+```
+
+### API Operations related to Concepts:
+- **Upsert a Concept:** Create or update a concept in a vocabulary using the PUT endpoint.
+- **Get a Concept:** Retrieve a specific concept from a vocabulary.
+- **Delete a Concept:** Remove a concept from a vocabulary.
+- **Bulk Operations:** Bulk upsert, update, or delete multiple concepts synchronously.
+
+For more details, you can refer to the Clinia API Reference on [Upsert a Concept](https://clinia.readme.io/reference/upsertconcept#/), [Get a Concept](https://clinia.readme.io/reference/getconcept#/), and [Bulk Concept Operations](https://clinia.readme.io/reference/bulkconcepts#/).
+
+Let me know if you want me to provide specifics on how to create or manage concepts via the API!",7.89,True,
+2025-05-14 11:03:28,What mecanism is used to treat multiple entities resolution?,Resolution queue,"Clinia uses an Entity Resolution mechanism to treat multiple entities resolution. Here's an overview of how it works and the key mechanisms involved:
+
+- **Entity Resolution Definition**: It is a technique for identifying data records in one or across multiple data sources that refer to the same real-world entity and linking them together.
+
+- **How Entity Resolution Works**:
+    - Data for a real-world entity might be fragmented in multiple data sources.
+    - The system assigns a unique identity to link those fragments into a single unified entity.
+    - When new data is ingested, the entity resolution process automatically compares incoming records against existing unified records using configured resolution rules.
+
+- **Resolution Rules Configuration**: 
+    - Users set up resource collections representing unified resource types.
+    - Resolution properties define which attributes are compared.
+    - Matchers specify comparison parameters.
+    - Resolvers define the matching outcomes.
+    - This configuration enables matching similar but heterogeneous records across sources.
+
+- **Outcomes of Entity Resolution**:
+    - **No match**: The record is new, and a new unified record is created.
+    - **Definitive match**: The record matches an existing unified record.
+    - **Possible match**: There is a potential match that requires human review.
+
+- **Human-in-the-loop via Resolution Queue**:
+    - Possible matches generate queue items for data stewards to review and resolve.
+    - This integrates human decision-making into automated workflows.
+
+- **Unified Records**:
+    - They uniquely represent real-world entities system-wide.
+    - Comprise aggregated data from all source records linked together.
+
+- **Entity Resolution Preview**:
+    - A tool/API endpoint lets you simulate and preview entity resolution outcomes before actual ingestion.
+    - Helps understand how the system will match incoming data.
+
+This mechanism effectively consolidates fragmented data about entities from multiple sources by automatic and configurable matching rules, producing unique unified records and allowing human review when matches are ambiguous.
+
+If you want, I can provide details on how to configure resolution rules or use the preview feature.",6.88,True,

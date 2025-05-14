@@ -29,70 +29,31 @@ embedding_model = get_env_var("EMBEDDING_MODEL") or "text-embedding-3-small"
 logfire.configure(token=get_env_var("LOGFIRE_API_KEY"))
 logfire.instrument_openai()
 
-module_agent_prompt = """
-# Role and Objective
-Act as an API documentation architect. Your goal is to produce a comprehensive markdown summary of all entities in the Clinia API, highlighting their definitions, main attributes, and interconnections.
+clinia_docs_agent_prompt = """
+# Role
+You are a Clinia documentation expert. Your mission is to accurately answer any user question by locating and synthesizing the most relevant information in the Clinia documentation.
 
-# Instructions
-You can use the tool
-- retrieve_relevant_documentation_tool and provide a user query to get relevant documentation from a vector database.
-- For each entity, extract its definition, main attributes, and all explicit relationships to other entities (e.g., foreign keys, references, parent-child).
+# Documentation structure
+1. Guide – overviews, concepts, getting-started material.
+2. Recipes – step-by-step tutorials and best practices.
+3. API Reference – complete endpoint specifications.
 
-## Additional Instructions
-- Ensure each entity section includes: name, description, main attributes, and relationships.
-- Use clear headings and bullet points where appropriate.
-- Ensure that each relationship is bidirectionally described where applicable.
+# Available tool
+- retrieve_relevant_documentation: fetches relevant documentation for a given query.
 
-# Reasoning Steps
-1. Retrieve a list of entities from the API documentation.
-2. For each entity, summarize its definition and main attributes.
-3. Identify and list explicit relationships to other entities.
-4. Format the output as markdown.
+# Step-by-step reasoning
 
-# Output Format
-# Entity: <Entity Name>
-## Description
-<Description>
-## Attributes
-- <attribute_1>
-- <attribute_2>
-## Relationships
-- <Relationship description with [[Related Entity]]>
+1. Find all references to the user query in the documentation.
+2. Iterate multiple times with your tools to get all relevant information.
+3. If you are not sure about the answer, use the retrieved information to create new query
+4. when you are confident about the answer, format it in markdown and return it. 
 
-# Examples
-## Example 1
-
-# Entity: Appointment
-## Description
-A scheduled meeting between a patient and a practitioner.
-## Attributes
-- id
-- patient_id
-- practitioner_id
-- time
-## Relationships
-- References [[Patient]] (via patient_id)
-- References [[Practitioner]] (via practitioner_id)
-
-# Entity: Patient
-## Description
-An individual who receives medical care.
-## Attributes
-- id
-- name
-## Relationships
-- Has many [[Appointment]]
-
-# Context
-You have access to a vector database containing the Clinia API documentation.
-
-# Final instructions and prompt to think step by step
-Proceed step by step: identify entities, summarize, extract attributes, relate, and format as markdown.
+Always think step by step and make sure to validate your answer
 """
 
 
 @dataclass
-class CliniaModuleAgentDeps:
+class CliniaDocAgentsDeps:
     """
     Data class holding dependencies for the Clinia module agent.
 
@@ -100,26 +61,28 @@ class CliniaModuleAgentDeps:
         supabase (Client): The Supabase client for database access.
         embedding_client (AsyncOpenAI): The OpenAI client for embedding generation.
     """
+
     supabase: Client
     embedding_client: AsyncOpenAI
 
 
-tools_refiner_agent = Agent(model, system_prompt=module_agent_prompt, deps_type=CliniaModuleAgentDeps, retries=2)
+clinia_docs_agent = Agent(model, system_prompt=clinia_docs_agent_prompt, deps_type=CliniaDocAgentsDeps, retries=2)
 
 
-@tools_refiner_agent.tool
-async def retrieve_relevant_documentation(ctx: RunContext[CliniaModuleAgentDeps], query: str) -> str:
+@clinia_docs_agent.tool
+async def retrieve_relevant_documentation(ctx: RunContext[CliniaDocAgentsDeps], query: str) -> str:
     """
     Tool to retrieve relevant documentation chunks for a given query using the agent's dependencies.
 
     Args:
-        ctx (RunContext[CliniaModuleAgentDeps]): The agent's context containing dependencies.
+        ctx (RunContext[CliniaDocAgentsDeps]): The agent's context containing dependencies.
         query (str): The user query string.
 
     Returns:
         str: Formatted documentation chunks or an error message if retrieval fails.
     """
-    return await retrieve_relevant_documentation_tool(ctx.deps.supabase, ctx.deps.embedding_client, query)
+    with logfire.span("create embedding for {search_query=}", search_query=query):
+        return await retrieve_relevant_documentation_tool(ctx.deps.supabase, ctx.deps.embedding_client, query)
 
 
 async def main():
@@ -131,15 +94,15 @@ async def main():
     """
     embedding_client, supabase = get_clients()
 
-    deps = CliniaModuleAgentDeps(
+    deps = CliniaDocAgentsDeps(
         supabase=supabase,
         embedding_client=embedding_client,
     )
 
-    query = "generate the markdown file containing the different entities from the clinia api documentation"
-    response = await tools_refiner_agent.run(query, deps=deps)
+    query = "Through which mecanism a human can be part of the Resolution process ? "
+    response = await clinia_docs_agent.run(query, deps=deps)
 
-    create_markdown_file("entities", response.data)
+    create_markdown_file("modules", response.data)
 
     print("Réponse de l'agent:")
     print(response.data)
