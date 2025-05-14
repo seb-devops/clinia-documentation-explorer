@@ -2,6 +2,13 @@
 Personal project to facilitate the exploration of Clinia's documentation 
 using a rag and a Agent that can query it.
 
+The project use:
+
+- supabase for the vector database
+- PydancticAI for the agent 
+- A jupyter notebook with sample data for evals
+- logfire for monitoring the agent
+
 ## Setup
 1. Install the dependenciees: 
 
@@ -58,6 +65,6 @@ The purpose of the evals folder is to generate a dataset to evaluate the perform
  - Add unit tests to validate tools and crawler
  - Improve metadata on the chunks to filter the results before embedding
 
-### Version 3
+### Version 3 ( TODO)
  - Answer complex query by using agentic RAG
  - Improve Monitoring to be able to follow accurately the behavior of the agents
