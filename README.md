@@ -41,7 +41,7 @@ To run the agent, use the following command:
 python src/clinia-doc-agent.py
 ```
 
-This will run the agent, which will extract entities and relationships from the API documentation and create a markdown file with the results.
+This will run the agent, and ask a sample question which you can modify in the main function of the file `src/clinia-doc-agent.py`.
 
 ### Evals
 To run the evals, run all the cells in the file `src/clinia-doc-evals.ipynb`. This will run the evals for testing the agent. It will append to a csv file the results of the evals. This contains:

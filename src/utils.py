@@ -28,7 +28,7 @@ def get_env_var(key: str) -> Optional[str]:
 def get_clients():
     openai_client = None
     base_url = get_env_var("BASE_URL") or "https://api.openai.com/v1"
-    api_key = get_env_var("LLM_API_KEY") or "no-api-key-provided"
+    api_key = get_env_var("OPENAI_API_KEY") or "no-api-key-provided"
 
     openai_client = AsyncOpenAI(base_url=base_url, api_key=api_key)  # Supabase client setup
 
