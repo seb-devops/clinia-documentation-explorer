@@ -17,20 +17,16 @@ from utils import get_clients, get_env_var
 
 load_dotenv()
 
-# Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
 )
 log = logging.getLogger("clinia-doc-crawler")
 
-# Initialize embedding and Supabase clients
 openai_client, supabase = get_clients()
 
-# Define the embedding model for embedding the documentation for RAG
 embedding_model = get_env_var("EMBEDDING_MODEL") or "text-embedding-3-small"
 
-# Initialize HTML to Markdown converter
 html_converter = html2text.HTML2Text()
 html_converter.ignore_links = False
 html_converter.ignore_images = False
@@ -209,7 +205,7 @@ def fetch_url_content(url: str) -> str:
         raise RuntimeError(f"Error fetching {url}: {str(e)}") from e
 
 
-async def crawl_parallel_with_requests(urls: List[str], max_concurrent: int = 5):
+async def crawl_parallel_with_requests(urls: List[str], max_concurrent: int = 10):
     """
     Asynchronously crawl multiple URLs in parallel with a concurrency limit.
 

@@ -1,22 +1,102 @@
 [
-    {
-        "question": "What is the module used for data management",
-        "answer": "Master Data Management"
-    },
-    {
-        "question": "How does two entities can be linked together?",
-        "answer": "Relationship"
-    },
-    {
-        "question": "What are the two types of search?",
-        "answer": "Standard Search, Health-Grade Search"
-    },
-    {
-        "question": "What Does compose a concept in the api?",
-        "answer": "code, designation, definition"
-    },
-    {
-        "question": "What mecanism is used to treat multiple entities resolution?",
-        "answer": "Resolution queue"
-    }
+  {
+    "question": "What is the module used for data management",
+    "answer": "Master Data Management"
+  },
+  {
+    "question": "How does two entities can be linked together?",
+    "answer": "Relationship"
+  },
+  {
+    "question": "What are the two types of search?",
+    "answer": "Standard Search, Health-Grade Search"
+  },
+  {
+    "question": "What Does compose a concept in the api?",
+    "answer": "code, designation, definition"
+  },
+  {
+    "question": "What mecanism is used to treat multiple entities resolution?",
+    "answer": "Resolution queue"
+  },
+  {
+    "question": "Which three elements do Resolution Rules define?",
+    "answer": "Resolution Properties, Matchers, Resolvers"
+  },
+  {
+    "question": "What are the three possible outcomes of an entity-resolution run?",
+    "answer": "No match, Definitive Match, Possible Match"
+  },
+  {
+    "question": "Name the two issue types handled in the Resolution Queue.",
+    "answer": "Possible Match Issue, Possible Duplicate Issue"
+  },
+  {
+    "question": "Which structure uniquely represents a real-world entity across the system?",
+    "answer": "Unified Record"
+  },
+  {
+    "question": "What three components form the Health Grade Search architecture?",
+    "answer": "Ingestion Pipeline, Embedding Models, API Endpoint"
+  },
+  {
+    "question": "Which embedding model is optimised for medical literature?",
+    "answer": "embedder_medical_journals_qa"
+  },
+  {
+    "question": "List two upcoming embedding models announced for HGS.",
+    "answer": "embedder_providers, embedder_emr"
+  },
+  {
+    "question": "What is the REST path for executing HGS queries?",
+    "answer": "/query"
+  },
+  {
+    "question": "State the three initial steps to configure Health Grade Search.",
+    "answer": "Configure Ingestion Pipeline, Select Embedding Model, Query the API"
+  },
+  {
+    "question": "Which operator performs simple equality in Standard Search filters?",
+    "answer": "eq"
+  },
+  {
+    "question": "Which two logical operators combine multiple filter clauses?",
+    "answer": "and, or"
+  },
+  {
+    "question": "What keyword identifies the only search module attachable to a partition?",
+    "answer": "STANDARD"
+  },
+  {
+    "question": "Which value must the 'type' field have for a Source Partition?",
+    "answer": "DATA_SOURCE"
+  },
+  {
+    "question": "Which value is used in the 'type' field for an MDM Partition?",
+    "answer": "MDM"
+  },
+  {
+    "question": "Which property acts as the unique identifier when defining a partition?",
+    "answer": "key"
+  },
+  {
+    "question": "Which symbol prefixes Traversed Property references?",
+    "answer": "@"
+  },
+  {
+    "question": "Which two resource types are linked by the example Location relationship?",
+    "answer": "Provider, Office"
+  },
+  {
+    "question": "Which validation strength forces codes to come from a specified vocabulary?",
+    "answer": "required"
+  },
+  {
+    "question": "Give the primitive data type that represents true/false values.",
+    "answer": "boolean"
+  },
+  {
+    "question": "Which complex data type represents geographic coordinates?",
+    "answer": "GeoPoint"
+  }
 ]
