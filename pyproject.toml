@@ -11,9 +11,8 @@ dependencies = [
     "openai==1.59.6",
     "html2text==2024.2.26",
     "supabase==2.11.0",
-    "Crawl4AI==0.4.247",
     "pydantic-ai==0.0.22",
-    "logfire=3.15.0",
+    "logfire==3.15.0",
 ]
 
 [dependency-groups]
@@ -25,11 +24,16 @@ dev = [
     "nest_asyncio>=1.6.0"
 ]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+pythonpath = ["src"]
+
 [tool.uv]
 package=true
 default-groups = ["dev"]
 
-## Imports and formatting
 [tool.ruff]
 line-length = 120
 
