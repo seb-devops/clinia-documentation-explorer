@@ -80,7 +80,7 @@ Open http://localhost:8000 in your browser.
 
 ### RAG improvements
  - Add a reranker model to improve the results of the retriever
- - Improve metadata on the chunks to filter the results before embedding and improve the performance of the agent
+ - Improve metadata on the chunks to filter the results after embedding and improve the performance of the agent
 
 ### Evaluations and test improvements
  - Evaluate RAG accuracy and use LLM-as-a-judge to validate the results
