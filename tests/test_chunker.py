@@ -12,6 +12,7 @@ def test_chunk_text_basic_split():
     assert chunks[1] == "B" * 1000
     assert chunks[2] == "C" * 1000
 
+
 def test_chunk_text_code_block_boundary():
     text = "Some intro.\n\n```python\nprint('Hello')\n```\n\nSome more text."
     # Force a small chunk size to test code block boundary
@@ -19,6 +20,7 @@ def test_chunk_text_code_block_boundary():
     # Should split at code block boundary
     assert any("```python" in chunk for chunk in chunks)
     assert any("print('Hello')" in chunk for chunk in chunks)
+
 
 def test_chunk_text_sentence_boundary():
     text = "This is a sentence. This is another. And another."
@@ -28,18 +30,22 @@ def test_chunk_text_sentence_boundary():
     assert chunks[0].endswith(".")
     assert len(chunks) > 1
 
+
 def test_chunk_text_no_split_needed():
     text = "Short text."
     chunks = chunk_text(text, chunk_size=100)
     assert chunks == ["Short text."]
 
+
 def test_chunk_text_empty_string():
     assert chunk_text("") == []
+
 
 def test_chunk_text_exact_chunk_size():
     text = "A" * 50
     chunks = chunk_text(text, chunk_size=50)
     assert chunks == ["A" * 50]
+
 
 def test_chunk_text_long_text_with_no_breaks():
     text = "A" * 120
