@@ -27,9 +27,7 @@ source .venv/bin/activate or .venv\Scripts\activate(Windows)
 
 
 ## Usage
-
 ### Supabase
-
 Create your Supabase project and then run the script
 `supabase_script/initialisation.sql` in the sql editor 
 to create the table, the stored procedures, basic security rule and the index.
@@ -41,39 +39,22 @@ To run the crawler, use the following command:
 python src/clinia-doc-crawler.py
 ```
 This will extract documentation from the Clinia website and store it in Supabase.
-### Agent
-To run the agent, use the following command:
-
-```bash
-python src/clinia-doc-agent.py
-```
-
-This will run the agent, and ask a sample question which you can modify in the main function of the file `src/clinia-doc-agent.py`.
-
-The agent can now be queried via the Streamlit web interface, in addition to the command line usage.
-
-### Evals
-To run the evals, run all the cells in the file `src/clinia-doc-evals.ipynb`. This will run the evals for testing the agent. It will append to a csv file the results of the evals. This contains:
-
-- The execution time of the agent
-- The number of token used by the agent
-- The accuracy of the answer generate by comparing to an expected answer
-
-The purpose of the evals folder is to generate a dataset to evaluate the performance of the agent while iterating on it.
-
-## Web Interface (Streamlit)
-
-A simple web interface using Streamlit is now available to interact with the agent.
-
 ### Launch the interface locally
-
-Make sure you have a `.env` file at the root of the project (see `.env.example`).
+Run the following command to start the Streamlit app:
 
 ```bash
 streamlit run src/clinia_streamlit_app.py
 ```
 
 Then open http://localhost:8501 in your browser.
+
+### Evals
+To run the evals, run all the cells in the file `src/clinia-doc-evals.ipynb`. This will run the evals for testing the agent. It will append to a csv file the results of the evals. This contains:
+
+- The execution time of the agent
+- The accuracy of the answer generate by comparing to an expected answer
+
+The purpose of the evals folder is to generate a dataset to evaluate the performance of the agent while iterating on it.
 
 ### Launch the interface via Docker (local)
 
@@ -86,23 +67,31 @@ docker run --env-file .env -p 8000:8000 clinia-doc-app
 
 Open http://localhost:8000 in your browser.
 
-## Project version 
+## Features and Roadmap
 
-### Version 1
+### Current Features
  - Crawler to extract documentation from the Clinia website and store it in supabase
  - Agent to ask simple questions to the documentation
  - Use logfire to monitor the agent( Compatible with OpenTelemetry)
  - Initial evals to test if the agent can answer the questions correctly.
 
-### Version 2 ( TODO)
- - Adding more robust evaluation that test the whole answer and not only some keywords
- - Adding guardrails to the agent to avoid unexpected behavior
- - Add unit tests to validate tools and crawler
+### New features
+ - Add complex queries that requires multiple steps to answer
+
+### RAG improvements
+ - Add a reranker model to improve the results of the retriever
  - Improve metadata on the chunks to filter the results before embedding and improve the performance of the agent
 
+### Evaluations and test improvements
+ - Evaluate RAG accuracy and use LLM-as-a-judge to validate the results
+ - Add unit tests to validate tools and crawler
 
-### Version 3 ( TODO)
- - Put the retriever behind an api to secure the access to the vector database
- - Add a web interface to ask questions to the agent
- - Answer complex query by using agentic RAG
- - Improve monitoring to be able to follow accurately the behavior of the agents
+### Deployment and monitoring improvements
+ - Add ci/cd to deploy the agent and the crawler
+
+### Road to production improvement
+ - Put the agent in a api to get more control(Authentication, rate limiting, etc.)
+ - Custom chatbot to interact with the agent in react
+ - Adding guardrails to the agent to avoid unexpected behavior
+
+
