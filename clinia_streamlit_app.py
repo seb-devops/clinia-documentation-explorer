@@ -11,9 +11,9 @@ st.title("💬 Clinia Documentation Chat")
 if "history" not in st.session_state:
     st.session_state["history"] = []
 
-query = st.text_input("Pose ta question sur la documentation Clinia :", "")
+query = st.text_input("Ask your question about Clinia documentation:", "")
 
-submit = st.button("Envoyer")
+submit = st.button("Send")
 
 async def ask_agent(query):
     embedding_client, supabase = get_clients()
@@ -23,7 +23,7 @@ async def ask_agent(query):
 
 if submit and query:
     st.session_state["history"].append(("user", query))
-    with st.spinner("L'agent réfléchit..."):
+    with st.spinner("The agent is thinking..."):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:
@@ -34,6 +34,6 @@ if submit and query:
 
 for role, msg in st.session_state["history"]:
     if role == "user":
-        st.markdown(f"**Vous :** {msg}")
+        st.markdown(f"**You:** {msg}")
     else:
-        st.markdown(f"**Agent Clinia :** {msg}")
+        st.markdown(f"**Clinia Agent:** {msg}")
