@@ -4,13 +4,14 @@ using a rag and a Agent that can query it.
 
 The project use:
 
-- supabase for the vector database
-- PydancticAI for the agent 
+- Supabase for the vector database
+- PydanticAI for the agent
 - A jupyter notebook with sample data for evals
 - logfire for monitoring the agent
+- Streamlit for the web interface
 
 ## Setup
-1. Install the dependenciees: 
+1. Install the dependencies:
 
 ```bash
 uv sync --dev
@@ -26,6 +27,12 @@ source .venv/bin/activate or .venv\Scripts\activate(Windows)
 
 
 ## Usage
+
+### Supabase
+
+Create your Supabase project and then run the script
+`supabase_script/initialisation.sql` in the sql editor 
+to create the table, the stored procedures, basic security rule and the index.
 
 ### Crawler
 To run the crawler, use the following command:
@@ -43,6 +50,8 @@ python src/clinia-doc-agent.py
 
 This will run the agent, and ask a sample question which you can modify in the main function of the file `src/clinia-doc-agent.py`.
 
+The agent can now be queried via the Streamlit web interface, in addition to the command line usage.
+
 ### Evals
 To run the evals, run all the cells in the file `src/clinia-doc-evals.ipynb`. This will run the evals for testing the agent. It will append to a csv file the results of the evals. This contains:
 
@@ -51,6 +60,31 @@ To run the evals, run all the cells in the file `src/clinia-doc-evals.ipynb`. Th
 - The accuracy of the answer generate by comparing to an expected answer
 
 The purpose of the evals folder is to generate a dataset to evaluate the performance of the agent while iterating on it.
+
+## Web Interface (Streamlit)
+
+A simple web interface using Streamlit is now available to interact with the agent.
+
+### Launch the interface locally
+
+Make sure you have a `.env` file at the root of the project (see `.env.example`).
+
+```bash
+streamlit run src/clinia_streamlit_app.py
+```
+
+Then open http://localhost:8501 in your browser.
+
+### Launch the interface via Docker (local)
+
+To use your local `.env` file with Docker:
+
+```bash
+docker build -t clinia-doc-app .
+docker run --env-file .env -p 8000:8000 clinia-doc-app
+```
+
+Open http://localhost:8000 in your browser.
 
 ## Project version 
 
@@ -61,10 +95,14 @@ The purpose of the evals folder is to generate a dataset to evaluate the perform
  - Initial evals to test if the agent can answer the questions correctly.
 
 ### Version 2 ( TODO)
- - Adding evals question for testing the agent with pydanticAI evals module
+ - Adding more robust evaluation that test the whole answer and not only some keywords
+ - Adding guardrails to the agent to avoid unexpected behavior
  - Add unit tests to validate tools and crawler
- - Improve metadata on the chunks to filter the results before embedding
+ - Improve metadata on the chunks to filter the results before embedding and improve the performance of the agent
+
 
 ### Version 3 ( TODO)
+ - Put the retriever behind an api to secure the access to the vector database
+ - Add a web interface to ask questions to the agent
  - Answer complex query by using agentic RAG
- - Improve Monitoring to be able to follow accurately the behavior of the agents
+ - Improve monitoring to be able to follow accurately the behavior of the agents
