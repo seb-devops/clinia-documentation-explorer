@@ -44,7 +44,7 @@ async def retrieve_relevant_documentation_tool(supabase: Client, embedding_clien
 
         result = supabase.rpc(
             "match_site_pages",
-            {"query_embedding": query_embedding, "match_count": 20, "filter": {"source": "clinia_docs"}},
+            {"query_embedding": query_embedding, "match_count": 10, "filter": {"source": "clinia_docs"}},
         ).execute()
 
         if not result.data:

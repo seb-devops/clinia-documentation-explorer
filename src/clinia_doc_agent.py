@@ -1,8 +1,7 @@
 from __future__ import annotations as _annotations
 
+import argparse  # Add import for argparse
 import asyncio
-import os
-import sys
 from dataclasses import dataclass
 
 import logfire
@@ -92,6 +91,10 @@ async def main():
     This function initializes the required clients and dependencies, runs the agent with a sample query,
     and saves the agent's response as a markdown file.
     """
+    parser = argparse.ArgumentParser(description="Run the Clinia documentation agent.")
+    parser.add_argument("query", type=str, help="The query to ask the agent.")
+    args = parser.parse_args()
+
     embedding_client, supabase = get_clients()
 
     deps = CliniaDocAgentsDeps(
@@ -99,8 +102,7 @@ async def main():
         embedding_client=embedding_client,
     )
 
-    query = "Through which mecanism a human can be part of the Resolution process ? "
-    response = await clinia_docs_agent.run(query, deps=deps)
+    response = await clinia_docs_agent.run(args.query, deps=deps)  # Use args.query
 
     create_markdown_file("modules", response.data)
 
